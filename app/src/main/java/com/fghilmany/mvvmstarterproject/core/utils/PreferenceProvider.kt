@@ -1,4 +1,4 @@
-package com.fghilmany.mvvmstarterproject.utils
+package com.fghilmany.mvvmstarterproject.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences

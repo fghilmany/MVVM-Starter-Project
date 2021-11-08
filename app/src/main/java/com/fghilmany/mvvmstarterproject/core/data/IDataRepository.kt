@@ -1,4 +1,4 @@
-package com.fghilmany.mvvmstarterproject.core
+package com.fghilmany.mvvmstarterproject.core.data
 
 import com.fghilmany.mvvmstarterproject.core.data.local.entity.Entity
 import com.fghilmany.mvvmstarterproject.core.data.remote.response.EmailResponse
@@ -10,11 +10,13 @@ interface IDataRepository {
     fun getEmailOnline(email: String): Flow<Resource<EmailResponse>>
 
     //get online offline
-    fun getEmailOnlineOffline(): Flow<Resource<Entity>>
+    fun getEmailOnlineOffline(email: String): Flow<Resource<Entity>>
 
     //get offline
-    fun getEmailOffline(): Flow<Resource<Entity>>
+    fun getEmailOffline(): Flow<Entity>
 
     //insert email offline
     suspend fun insertEmailOffline(entity: Entity)
+
+
 }

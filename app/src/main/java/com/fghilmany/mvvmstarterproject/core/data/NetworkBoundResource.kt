@@ -1,4 +1,4 @@
-package com.fghilmany.mvvmstarterproject.core
+package com.fghilmany.mvvmstarterproject.core.data
 
 import com.fghilmany.mvvmstarterproject.core.data.remote.network.ApiResponse
 import kotlinx.coroutines.flow.*

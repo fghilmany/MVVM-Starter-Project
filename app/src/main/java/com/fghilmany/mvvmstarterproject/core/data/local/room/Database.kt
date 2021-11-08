@@ -3,7 +3,7 @@ package com.fghilmany.mvvmstarterproject.core.data.local.room
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.fghilmany.mvvmstarterproject.core.data.local.entity.Entity
-import com.fghilmany.mvvmstarterproject.utils.DATABASE_VERSION
+import com.fghilmany.mvvmstarterproject.core.utils.DATABASE_VERSION
 
 @Database(
     entities = [Entity::class],
