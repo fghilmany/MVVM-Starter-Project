@@ -12,10 +12,6 @@ abstract class OnlineBoundResource<RequestType> {
             is ApiResponse.Success -> {
                 getResponse(apiResponse.body)
                 emit(Resource.Success(apiResponse.body))
-               /* emitAll(
-                    getResponse(apiResponse.body).map {
-                    Resource.Success(it)
-                })*/
             }
             is ApiResponse.Empty -> {}
             is ApiResponse.Error -> {

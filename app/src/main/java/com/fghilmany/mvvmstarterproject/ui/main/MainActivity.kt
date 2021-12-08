@@ -20,15 +20,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel.email.value = "email"
-        viewModel.email.observe(this){
+        viewModel.email.observe(this, {
             Timber.d(it)
-        }
-        viewModel.getEmailOnline()?.observe(this){
+        })
+        viewModel.getEmailOnline()?.observe(this, {
             when(it){
                 is Resource.Loading -> {}
                 is Resource.Success -> {}
                 is Resource.Error -> {}
             }
-        }
+        })
     }
 }
