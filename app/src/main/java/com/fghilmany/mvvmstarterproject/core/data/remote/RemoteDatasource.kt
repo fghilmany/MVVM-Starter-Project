@@ -29,33 +29,52 @@ class RemoteDatasource(
                     emit(ApiResponse.Empty)
                 }
             }catch (e: Exception){
-                when(e){
-                    is SocketTimeoutException -> {
-                        emit(ApiResponse.Error("Connection time out"))
-                        Timber.tag("getEmail").e(e.message.toString())
-                    }
-
-                    is HttpException -> {
-                        //if `message` key there or not, use try{} catch(){}
-                        try {
-                            val `object` = JSONObject(e.response()?.errorBody()?.string().toString())
-                            val messageString: String = `object`.getString("message")
-                            emit(ApiResponse.Error(messageString))
-                            Timber.tag("getEmail").e(messageString)
-                        }catch(e: Exception){
-                            val messageString = "Something Wrong"
-                            emit(ApiResponse.Error(messageString))
-                            Timber.tag("getEmail").e(messageString)
-                        }
-                    }
-
-                    else -> {
-                        val messageString = "Something Wrong"
-                        emit(ApiResponse.Error(messageString))
-                        Timber.tag("getEmail").e(messageString)
-                    }
-                }
+                exceptionLog(e, "getEmail")
             }
         }
     }
+
+    private fun exceptionLog(e: Exception, tagLog: String): ApiResponse.Error {
+        val tag = this::class.java.simpleName
+
+        when (e) {
+            is SocketTimeoutException -> {
+                Timber.tag(tagLog).e(e.message.toString())
+                return (ApiResponse.Error(
+                    e.message.toString() + ", " + context.resources.getString(
+                        R.string.check_your_internet_connection
+                    )
+                ))
+            }
+
+            is HttpException -> {
+                return try {
+                    val `object` = JSONObject(e.response()?.errorBody()?.string().toString())
+                    val messageString: String = `object`.getString("message")
+                    Timber.tag(tagLog).e(messageString)
+                    (ApiResponse.Error(messageString))
+                } catch (e: Exception) {
+                    val messageString = context.resources.getString(R.string.something_wrong)
+                    Timber.tag(tagLog).e(messageString)
+                    (ApiResponse.Error(messageString))
+                }
+            }
+
+            is NoSuchElementException -> {
+                Timber.tag(tagLog).e(e.message.toString())
+                return (ApiResponse.Error(
+                    e.message.toString() + ", " + context.resources.getString(
+                        R.string.check_your_internet_connection
+                    )
+                ))
+            }
+
+            else -> {
+                val messageString = context.resources.getString(R.string.something_wrong)
+                Timber.tag(tagLog).e(e)
+                return (ApiResponse.Error(messageString))
+            }
+        }
+    }
+
 }
