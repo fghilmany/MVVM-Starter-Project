@@ -1,7 +1,7 @@
 package com.fghilmany.mvvmstarterproject.core.data
 
 import com.fghilmany.mvvmstarterproject.core.data.local.LocalDatasource
-import com.fghilmany.mvvmstarterproject.core.data.local.entity.Entity
+import com.fghilmany.mvvmstarterproject.core.data.local.entity.EmailEntity
 import com.fghilmany.mvvmstarterproject.core.data.remote.RemoteDatasource
 import com.fghilmany.mvvmstarterproject.core.data.remote.network.ApiResponse
 import com.fghilmany.mvvmstarterproject.core.data.remote.response.EmailResponse
@@ -28,14 +28,14 @@ class DataRepository (
     }
 
     // get online offline
-    override fun getEmailOnlineOffline(email: String): Flow<Resource<Entity>> {
-        return object : NetworkBoundResource<Entity, EmailResponse>(){
-            override fun loadFromDB(): Flow<Entity> {
+    override fun getEmailOnlineOffline(email: String): Flow<Resource<List<EmailEntity>>> {
+        return object : NetworkBoundResource<List<EmailEntity>, EmailResponse>(){
+            override fun loadFromDB(): Flow<List<EmailEntity>> {
                 return localDatasource.getEmail()
             }
 
-            override fun shouldFetch(data: Entity?): Boolean {
-                return data == null
+            override fun shouldFetch(data: List<EmailEntity>?): Boolean {
+                return data == null || data.isNullOrEmpty()
             }
 
             override suspend fun createCall(): Flow<ApiResponse<EmailResponse>> {
@@ -43,9 +43,7 @@ class DataRepository (
             }
 
             override suspend fun saveCallResult(data: EmailResponse) {
-                val mapping = Entity(
-                    data.message?:""
-                )
+                val mapping = arrayListOf<EmailEntity>()
                 localDatasource.insertEmail(mapping)
             }
 
@@ -53,13 +51,8 @@ class DataRepository (
     }
 
     // get offline
-    override fun getEmailOffline(): Flow<Entity> {
+    override fun getEmailOffline(): Flow<List<EmailEntity>> {
         return localDatasource.getEmail()
-    }
-
-    // insert email offline
-    override suspend fun insertEmailOffline(entity: Entity) {
-        localDatasource.insertEmail(entity)
     }
 
 

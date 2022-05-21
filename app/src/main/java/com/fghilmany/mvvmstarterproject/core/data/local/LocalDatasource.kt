@@ -1,11 +1,14 @@
 package com.fghilmany.mvvmstarterproject.core.data.local
 
-import com.fghilmany.mvvmstarterproject.core.data.local.entity.Entity
+import com.fghilmany.mvvmstarterproject.core.data.local.entity.EmailEntity
 import com.fghilmany.mvvmstarterproject.core.data.local.room.Dao
+import kotlinx.coroutines.flow.Flow
 
-class LocalDatasource(
+class LocalDatasource (
     private val dao: Dao
 ) {
-    fun getEmail() = dao.getEmail()
-    suspend fun insertEmail(entity: Entity) = dao.insertEmail(entity)
+    fun getEmail(): Flow<List<EmailEntity>> = dao.getEmail()
+    suspend fun insertEmail(emailEntity: List<EmailEntity>) {
+        return dao.insertEmail(emailEntity)
+    }
 }
