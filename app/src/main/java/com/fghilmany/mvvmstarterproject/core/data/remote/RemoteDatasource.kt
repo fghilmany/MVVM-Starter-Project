@@ -5,8 +5,10 @@ import com.fghilmany.mvvmstarterproject.R
 import com.fghilmany.mvvmstarterproject.core.data.remote.network.ApiResponse
 import com.fghilmany.mvvmstarterproject.core.data.remote.network.ApiServices
 import com.fghilmany.mvvmstarterproject.core.data.remote.response.EmailResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import retrofit2.HttpException
 import timber.log.Timber
@@ -29,14 +31,13 @@ class RemoteDatasource(
                     emit(ApiResponse.Empty)
                 }
             }catch (e: Exception){
-                exceptionLog(e, "getEmail")
+                emit(exceptionLog(e, "getEmail"))
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     private fun exceptionLog(e: Exception, tagLog: String): ApiResponse.Error {
-        val tag = this::class.java.simpleName
-
+        val tag = RemoteDatasource::class.java.simpleName
         when (e) {
             is SocketTimeoutException -> {
                 Timber.tag(tagLog).e(e.message.toString())
